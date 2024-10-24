@@ -58,7 +58,11 @@ app.get('/orders', (req, res) => {
   const query = `
     SELECT p.pro_id, 
            u_send.name AS user_send_name, 
+           u_send.address AS user_send_address, 
+           u_send.gps AS user_send_gps, 
            u_receive.name AS user_receive_name, 
+           u_receive.address AS user_receive_address, 
+           u_receive.gps AS user_receive_gps, 
            p.details, 
            p.status 
     FROM product p
@@ -73,6 +77,9 @@ app.get('/orders', (req, res) => {
     res.json(rows); // ส่งข้อมูลกลับ
   });
 });
+
+
+
 
 
 
