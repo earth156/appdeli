@@ -79,6 +79,18 @@ app.get('/orders', (req, res) => {
 });
 
 
+// API สำหรับเพิ่มข้อมูลไรเดอร์ในตาราง product
+app.post('/rider/product', (req, res) => {
+  const { details, img, status, user_send, user_receive, rider } = req.body;
+
+  const sql = `INSERT INTO product (details, img, status, user_send, user_receive, rider) VALUES (?, ?, ?, ?, ?, ?)`;
+  db.run(sql, [details, img, status, user_send, user_receive, rider], function (err) {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+    res.status(201).json({ message: 'Product created successfully', pro_id: this.lastID });
+  });
+});
 
 
 
