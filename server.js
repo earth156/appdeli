@@ -223,11 +223,12 @@ app.post("/registerrider", (req, res) => {
   });
 });
 
-// สร้าง API สำหรับแสดงข้อมูลผู้ใช้ทั้งหมด
-app.get('/showUser', (req, res) => {
-  const sql = 'SELECT * FROM users'; // ดึงข้อมูลผู้ใช้ทั้งหมด
 
-  db.query(sql, (err, rows) => { // ใช้ db.query เพื่อดึงข้อมูล
+// ดึงข้อมูลทั้งหมดจากตาราง users ที่ type เป็น 'user'
+app.get('/showUser', (req, res) => {
+  const sql = 'SELECT * FROM users WHERE type = ?'; // เพิ่มเงื่อนไข WHERE สำหรับ type
+
+  db.all(sql, ['user'], (err, rows) => { // ใช้ db.all แทน db.get เพื่อดึงข้อมูลหลายแถว
     if (err) {
       console.error('เกิดข้อผิดพลาดในการดึงข้อมูลจากฐานข้อมูล:', err.message);
       return res.status(500).json({ error: 'เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้' });
@@ -237,7 +238,6 @@ app.get('/showUser', (req, res) => {
     res.json({ users: rows });
   });
 });
-
 
 
 app.get('/checkPhone', (req, res) => {
