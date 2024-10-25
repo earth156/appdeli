@@ -225,7 +225,7 @@ app.post("/registerrider", (req, res) => {
 
 app.get('/showUser', (req, res) => {
   const { userId } = req.query; // รับ userId ที่จะใช้ในการกรอง
-  const sql = 'SELECT * FROM users WHERE type = ? AND userId != ?'; // เพิ่มเงื่อนไข WHERE สำหรับ type และไม่รวม userId ของตนเอง
+  const sql = 'SELECT * FROM users WHERE type = ? AND userId != ?'; // กรองไม่ให้ userId ของผู้ใช้ปัจจุบันแสดง
 
   db.all(sql, ['user', userId], (err, rows) => { // ใช้ db.all เพื่อดึงข้อมูลหลายแถว
     if (err) {
@@ -237,6 +237,7 @@ app.get('/showUser', (req, res) => {
     res.json({ users: rows });
   });
 });
+
 
 
 app.get('/checkPhone', (req, res) => {
