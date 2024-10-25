@@ -157,8 +157,27 @@ app.post("/login", (req, res) => {
   });
 });
 
+// สร้าง API เพื่อดึงข้อมูลโปรไฟล์ตามประเภทของผู้ใช้
+app.get('/userProfile/:userId', (req, res) => {
+  const userId = req.params.userId;
 
+  const sql = `SELECT name, phone, password, profile, address, gps, type 
+               FROM users 
+               WHERE user_id = ?`;
 
+  db.get(sql, [userId], (err, row) => {
+    if (err) {
+      res.status(500).json({ error: 'เกิดข้อผิดพลาดในการดึงข้อมูลโปรไฟล์' });
+      return;
+    }
+
+    if (row) {
+      res.json(row);
+    } else {
+      res.status(404).json({ message: 'ไม่พบผู้ใช้ที่ระบุ' });
+    }
+  });
+});
 
 // API register - insert user into users table
 app.post("/register", (req, res) => {
