@@ -196,29 +196,21 @@ app.post("/login", (req, res) => {
 
 // API register - insert user into users table
 app.post("/register", (req, res) => {
-  const { name, phone, password, address, gps, car_reg } = req.body;
+  const { name, phone, password, address, gps } = req.body;
 
   // ตรวจสอบว่าข้อมูลที่ต้องการทั้งหมดถูกส่งมาครบถ้วน
   if (!name || !phone || !password) {
     return res.status(400).json({ error: "กรุณากรอกข้อมูลให้ครบทุกช่อง" });
   }
 
-  // กำหนดค่าเริ่มต้นสำหรับ car_reg, profile และ type
-  let type, carRegValue = null; // กำหนดให้ carRegValue เป็น null
-
-  // เช็คว่า car_reg ถูกส่งมาหรือไม่
-  if (car_reg) {
-    type = "rider"; // หากมีเลขทะเบียนรถให้กำหนด type เป็น "rider"
-    carRegValue = car_reg; // ใช้เลขทะเบียนรถที่ส่งเข้ามา
-  } else {
-    type = "user"; // หากไม่มีเลขทะเบียนรถให้กำหนด type เป็น "user"
-  }
+  // กำหนดให้ type เป็น "user" เสมอ
+  const type = "user"; // กำหนด type เป็น user
 
   // SQL สำหรับการ insert ข้อมูลลงในฐานข้อมูล
-  const sql = "INSERT INTO users (name, phone, password, address, gps, car_reg, profile, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-  
+  const sql = "INSERT INTO users (name, phone, password, address, gps, profile, type) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
   // ทำการรัน SQL เพื่อเพิ่มข้อมูล
-  db.run(sql, [name, phone, password, address || null, gps || null, carRegValue, null, type], function (err) {
+  db.run(sql, [name, phone, password, address || null, gps || null, null, type], function (err) {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
@@ -228,6 +220,7 @@ app.post("/register", (req, res) => {
     res.json({ message: "User registered successfully", id: this.lastID });
   });
 });
+
 
 // API register - insert rider into users table
 app.post("/registerrider", (req, res) => {
