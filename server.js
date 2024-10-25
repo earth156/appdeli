@@ -239,6 +239,31 @@ app.get('/showUser', (req, res) => {
   });
 });
 
+// API เพื่อตรวจสอบสถานะการส่งของไรเดอร์
+app.get('/api/deliveries/:riderId', (req, res) => {
+  const riderId = req.params.riderId;
+
+  const query = `
+      SELECT p.pro_id, p.details, p.img, p.status, 
+             us.user_id AS user_send_id, us.name AS user_send_name, 
+             us.phone AS user_send_phone, us.address AS user_send_address, 
+             ur.user_id AS user_receive_id, ur.name AS user_receive_name, 
+             ur.phone AS user_receive_phone, ur.address AS user_receive_address, 
+             r.user_id AS rider_id, r.name AS rider_name, r.phone AS rider_phone, r.car_reg
+      FROM product p
+      JOIN users us ON p.user_send = us.user_id
+      JOIN users ur ON p.user_receive = ur.user_id
+      JOIN users r ON p.rider = r.user_id
+      WHERE p.rider = ?`;
+
+  db.query(query, [riderId], (err, results) => {
+      if (err) {
+          return res.status(500).json({ status: 'error', message: err.message });
+      }
+
+      res.json({ status: 'success', data: results });
+  });
+});
 
 app.get('/checkPhone', (req, res) => {
   const { phone } = req.query; // ดึงเบอร์โทรศัพท์จาก query parameters
