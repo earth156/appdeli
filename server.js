@@ -304,15 +304,14 @@ app.get('/checkPhone', (req, res) => {
 
 
 // เพิ่มข้อมูลผลิตภัณฑ์
-// เพิ่มข้อมูลผลิตภัณฑ์
 app.post('/insertProduct/:user_send_id/:user_receive_id', (req, res) => {
-  const { details } = req.body; // ดึงรายละเอียดผลิตภัณฑ์จาก body
+  const { details, imagePath } = req.body; // ดึงรายละเอียดผลิตภัณฑ์และ path ของภาพจาก body
   const userSendId = req.params.user_send_id; // ดึง user_send_id จากพารามิเตอร์ URL
   const userReceiveId = req.params.user_receive_id; // ดึง user_receive_id จากพารามิเตอร์ URL
 
   const sql = 'INSERT INTO product (details, img, status, user_send, user_receive) VALUES (?, ?, ?, ?, ?)';
   
-  db.run(sql, [details, null, 'รอไรเดอร์มารับสินค้า', userSendId, userReceiveId], function(err) {
+  db.run(sql, [details, imagePath, 'รอไรเดอร์มารับสินค้า', userSendId, userReceiveId], function(err) {
     if (err) {
       console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลผลิตภัณฑ์:', err.message);
       return res.status(500).json({ error: 'เกิดข้อผิดพลาดในการเพิ่มข้อมูลผลิตภัณฑ์' });
@@ -321,6 +320,7 @@ app.post('/insertProduct/:user_send_id/:user_receive_id', (req, res) => {
     res.status(201).json({ message: 'ผลิตภัณฑ์ถูกเพิ่มเรียบร้อยแล้ว', pro_id: this.lastID });
   });
 });
+
 
 
 // Endpoint สำหรับแสดงสินค้าที่ผู้ใช้ส่ง
