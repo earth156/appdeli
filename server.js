@@ -225,9 +225,9 @@ app.post("/registerrider", (req, res) => {
 
 app.get('/showUser', (req, res) => {
   const { userId } = req.query; // รับ userId ที่จะใช้ในการกรอง
-  const sql = 'SELECT * FROM users WHERE type = ? AND userId != ?'; // กรองไม่ให้ userId ของผู้ใช้ปัจจุบันแสดง
+  const sql = 'SELECT * FROM users WHERE userId != ?'; // กรองไม่ให้ userId ของผู้ใช้ปัจจุบันแสดง
 
-  db.all(sql, ['user', userId], (err, rows) => { // ใช้ db.all เพื่อดึงข้อมูลหลายแถว
+  db.all(sql, [userId], (err, rows) => { // ใช้ db.all เพื่อดึงข้อมูลหลายแถว
     if (err) {
       console.error('เกิดข้อผิดพลาดในการดึงข้อมูลจากฐานข้อมูล:', err.message);
       return res.status(500).json({ error: 'เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้' });
