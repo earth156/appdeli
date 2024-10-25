@@ -179,40 +179,42 @@ app.get('/userProfile/:userId', (req, res) => {
   });
 });
 
-// API register - insert user into users table
 app.post("/register", (req, res) => {
   const { name, phone, password, address, gps, car_reg } = req.body;
 
   // ตรวจสอบว่าข้อมูลที่ต้องการทั้งหมดถูกส่งมาครบถ้วน
-  if (!name || !phone || !password) {
-    return res.status(400).json({ error: "กรุณากรอกข้อมูลให้ครบทุกช่อง" });
+  if (!name || !phone || !password || !address || !gps) {
+    return res.status(400).json({ error: "กรุณากรอกข้อมูลให้ครบ" });
   }
 
-  // กำหนดค่าเริ่มต้นสำหรับ car_reg, profile และ type
-  let type, carRegValue = null; // กำหนดให้ carRegValue เป็น null
+  const sql = `INSERT INTO users (name, phone, password, address, gps, car_reg, type) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  const type = phone.length > 10 ? "user" : "rider"; // กำหนดประเภท
 
-  // เช็คว่า car_reg ถูกส่งมาหรือไม่
-  if (car_reg) {
-    type = "rider"; // หากมีเลขทะเบียนรถให้กำหนด type เป็น "rider"
-    carRegValue = car_reg; // ใช้เลขทะเบียนรถที่ส่งเข้ามา
-  } else {
-    type = "user"; // หากไม่มีเลขทะเบียนรถให้กำหนด type เป็น "user"
-  }
-
-  // SQL สำหรับการ insert ข้อมูลลงในฐานข้อมูล
-  const sql = "INSERT INTO users (name, phone, password, address, gps, car_reg, profile, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-  
-  // ทำการรัน SQL เพื่อเพิ่มข้อมูล
-  db.run(sql, [name, phone, password, address || null, gps || null, carRegValue, null, type], function (err) {
+  db.run(sql, [name, phone, password, address || null, gps || null, car_reg, null, type], function (err) {
     if (err) {
-      res.status(500).json({ error: err.message });
-      return;
+      console.error(err); // แสดงข้อผิดพลาดใน console
+      return res.status(500).json({ error: err.message });
     }
-
-    // คืนค่า response พร้อมกับ ID ที่เพิ่งถูกเพิ่ม
     res.json({ message: "User registered successfully", id: this.lastID });
   });
 });
+
+// // ตรวจสอบเบอร์โทรศัพท์
+// app.get('/checkPhone', (req, res) => {
+//   const phone = req.query.phone;
+
+//   const sql = 'SELECT * FROM users WHERE phone = ?';
+//   db.get(sql, [phone], (err, row) => {
+//     if (err) {
+//       return res.status(500).json({ error: err.message });
+//     }
+//     if (row) {
+//       return res.status(409).json({ error: 'หมายเลขโทรศัพท์นี้ถูกลงทะเบียนแล้ว' });
+//     }
+//     res.status(200).json({ message: 'หมายเลขโทรศัพท์นี้สามารถใช้งานได้' });
+//   });
+// });
+
 
 // API register - insert rider into users table
 app.post("/registerrider", (req, res) => {
