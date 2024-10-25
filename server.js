@@ -223,11 +223,11 @@ app.post("/registerrider", (req, res) => {
   });
 });
 
+// สร้าง API สำหรับแสดงข้อมูลผู้ใช้ทั้งหมด
 app.get('/showUser', (req, res) => {
-  const { userId } = req.query; // รับ userId ที่จะใช้ในการกรอง
-  const sql = 'SELECT * FROM users WHERE user_id != ?'; // กรองไม่ให้ userId ของผู้ใช้ปัจจุบันแสดง
+  const sql = 'SELECT * FROM users'; // ดึงข้อมูลผู้ใช้ทั้งหมด
 
-  db.all(sql, [userId], (err, rows) => { // ใช้ db.all เพื่อดึงข้อมูลหลายแถว
+  db.query(sql, (err, rows) => { // ใช้ db.query เพื่อดึงข้อมูล
     if (err) {
       console.error('เกิดข้อผิดพลาดในการดึงข้อมูลจากฐานข้อมูล:', err.message);
       return res.status(500).json({ error: 'เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้' });
