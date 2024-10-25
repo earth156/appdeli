@@ -225,7 +225,7 @@ app.post("/registerrider", (req, res) => {
 
 app.get('/showUser', (req, res) => {
   const { userId } = req.query; // รับ userId ที่จะใช้ในการกรอง
-  const sql = 'SELECT * FROM users WHERE userId != ?'; // กรองไม่ให้ userId ของผู้ใช้ปัจจุบันแสดง
+  const sql = 'SELECT * FROM users WHERE user_id != ?'; // กรองไม่ให้ userId ของผู้ใช้ปัจจุบันแสดง
 
   db.all(sql, [userId], (err, rows) => { // ใช้ db.all เพื่อดึงข้อมูลหลายแถว
     if (err) {
