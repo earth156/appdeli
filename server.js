@@ -157,27 +157,42 @@ app.post("/login", (req, res) => {
   });
 });
 
-// สร้าง API เพื่อดึงข้อมูลโปรไฟล์ตามประเภทของผู้ใช้
-app.get('/userProfile/:userId', (req, res) => {
-  const userId = req.params.userId;
+// app.post("/register", (req, res) => {
+//   const { name, phone, password, address, gps, car_reg } = req.body;
 
-  const sql = `SELECT name, phone, password, profile, address, gps, type 
-               FROM users 
-               WHERE user_id = ?`;
+//   // ตรวจสอบว่าข้อมูลที่ต้องการทั้งหมดถูกส่งมาครบถ้วน
+//   if (!name || !phone || !password || !address || !gps) {
+//     return res.status(400).json({ error: "กรุณากรอกข้อมูลให้ครบ" });
+//   }
 
-  db.get(sql, [userId], (err, row) => {
-    if (err) {
-      res.status(500).json({ error: 'เกิดข้อผิดพลาดในการดึงข้อมูลโปรไฟล์' });
-      return;
-    }
+//   const sql = `INSERT INTO users (name, phone, password, address, gps, car_reg, type) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+//   const type = phone.length > 10 ? "user" : "rider"; // กำหนดประเภท
 
-    if (row) {
-      res.json(row);
-    } else {
-      res.status(404).json({ message: 'ไม่พบผู้ใช้ที่ระบุ' });
-    }
-  });
-});
+//   db.run(sql, [name, phone, password, address || null, gps || null, car_reg, null, type], function (err) {
+//     if (err) {
+//       console.error(err); // แสดงข้อผิดพลาดใน console
+//       return res.status(500).json({ error: err.message });
+//     }
+//     res.json({ message: "User registered successfully", id: this.lastID });
+//   });
+// });
+
+// // ตรวจสอบเบอร์โทรศัพท์
+// app.get('/checkPhone', (req, res) => {
+//   const phone = req.query.phone;
+
+//   const sql = 'SELECT * FROM users WHERE phone = ?';
+//   db.get(sql, [phone], (err, row) => {
+//     if (err) {
+//       return res.status(500).json({ error: err.message });
+//     }
+//     if (row) {
+//       return res.status(409).json({ error: 'หมายเลขโทรศัพท์นี้ถูกลงทะเบียนแล้ว' });
+//     }
+//     res.status(200).json({ message: 'หมายเลขโทรศัพท์นี้สามารถใช้งานได้' });
+//   });
+// });
+
 
 // API register - insert user into users table
 app.post("/register", (req, res) => {
