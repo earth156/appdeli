@@ -79,7 +79,6 @@ app.get('/orders', (req, res) => {
 });
 
 
-// API สำหรับอัปเดตข้อมูลไรเดอร์ในตาราง product
 app.put('/rider/product/:pro_id', (req, res) => {
   const { rider } = req.body; // รับ user_id ของไรเดอร์จาก body
   const proId = req.params.pro_id; // รับ pro_id จากพารามิเตอร์
@@ -98,9 +97,7 @@ app.put('/rider/product/:pro_id', (req, res) => {
 
     res.status(200).json({ message: 'Rider updated successfully' });
   });
-});
-
-
+});  
 
 
 
