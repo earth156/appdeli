@@ -224,7 +224,7 @@ app.post("/register", (req, res) => {
 
 // API register - insert rider into users table
 app.post("/registerrider", (req, res) => {
-  const { name, phone, password, car_reg } = req.body;
+  const { name, phone, password, car_reg, profile } = req.body;
 
   // ตรวจสอบว่าข้อมูลที่ต้องการทั้งหมดถูกส่งมาครบถ้วน
   if (!name || !phone || !password || !car_reg) {
@@ -239,7 +239,10 @@ app.post("/registerrider", (req, res) => {
 
   const sql = "INSERT INTO users (name, phone, password, address, gps, car_reg, profile, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-  db.run(sql, [name, phone, password, address, gps, car_reg, null, type], function (err) {
+  // เปลี่ยนแปลงบรรทัดนี้เพื่อบันทึกโปรไฟล์เป็น Base64 หรืออัปโหลดไปยังที่เก็บข้อมูล
+  const sqlParams = [name, phone, password, address, gps, car_reg, profile, type];
+
+  db.run(sql, sqlParams, function (err) {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
