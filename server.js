@@ -223,6 +223,24 @@ app.post("/registerrider", (req, res) => {
   });
 });
 
+// API สำหรับดึงพิกัด GPS ของผู้รับสินค้าสำหรับ user_id ที่กำหนด
+app.get('/api/products/:userId/receivers', (req, res) => {
+  const userId = req.params.userId;
+
+  const query = `
+      SELECT u.user_id, u.name, u.gps 
+      FROM product p
+      JOIN users u ON p.user_receive = u.user_id
+      WHERE p.user_send = ?`;
+
+  db.query(query, [userId], (err, results) => {
+      if (err) {
+          return res.status(500).json({ status: 'error', message: err.message });
+      }
+
+      res.json({ status: 'success', data: results });
+  });
+});
 
 // ดึงข้อมูลทั้งหมดจากตาราง users ที่ type เป็น 'user'
 app.get('/showUser', (req, res) => {
