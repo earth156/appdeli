@@ -223,11 +223,11 @@ app.post("/registerrider", (req, res) => {
   });
 });
 
-// ดึงข้อมูลทั้งหมดจากตาราง users ที่ type เป็น 'user'
 app.get('/showUser', (req, res) => {
-  const sql = 'SELECT * FROM users WHERE type = ?'; // เพิ่มเงื่อนไข WHERE สำหรับ type
+  const { userId } = req.query; // รับ userId ที่จะใช้ในการกรอง
+  const sql = 'SELECT * FROM users WHERE type = ? AND userId != ?'; // เพิ่มเงื่อนไข WHERE สำหรับ type และไม่รวม userId ของตนเอง
 
-  db.all(sql, ['user'], (err, rows) => { // ใช้ db.all แทน db.get เพื่อดึงข้อมูลหลายแถว
+  db.all(sql, ['user', userId], (err, rows) => { // ใช้ db.all เพื่อดึงข้อมูลหลายแถว
     if (err) {
       console.error('เกิดข้อผิดพลาดในการดึงข้อมูลจากฐานข้อมูล:', err.message);
       return res.status(500).json({ error: 'เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้' });
@@ -237,6 +237,7 @@ app.get('/showUser', (req, res) => {
     res.json({ users: rows });
   });
 });
+
 
 app.get('/checkPhone', (req, res) => {
   const { phone } = req.query; // ดึงเบอร์โทรศัพท์จาก query parameters
